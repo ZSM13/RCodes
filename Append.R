@@ -1,0 +1,8 @@
+setwd("Y:/")
+last<-read.csv("Y:/lastmonth.csv")
+current<-read.csv("Y:/thismonth.csv")
+require(gtools)
+last <- data.frame(last)
+current <- data.frame(current)
+data<-smartbind(last, current)
+write.csv(data, (file=paste(format(Sys.Date(), "%Y-%m-%d-"),"CapitationNumbers",  ".csv", sep="")), row.names=FALSE)
