@@ -1,5 +1,5 @@
 
-#Function to convert TrackVia dates to R dates
+#Function to convert TrackVia dates to universal date format
 exceldate <- function(date){
   
   if (!is.factor(date)) {
