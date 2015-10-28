@@ -20,3 +20,4 @@ Reporting.R: R code that cleans and merges data from many files for grant report
 
 Triage.R: Cleans and prepares data for daily triage for our care management team
 
+excelDatesFunction.R: If the variable is a factor, converts excel dates in the format Jan 01, 1990 to 1990-01-01
