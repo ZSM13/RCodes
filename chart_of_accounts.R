@@ -9,6 +9,14 @@
     # Program 5 - CCHP Programs
     # Employees 7 - no table
 
+# Save each sheet as a separate CSV file before importing into R
+  # Unhide all columns in Excel file
+
+# Install packages
+library(dplyr)
+
+# Set working directory where you save the CSVs
+
 #### GL Codes 2 ####
   # Column Names, Excel
     # Account Code 
@@ -28,16 +36,6 @@
     # Description
     # Examples
     # Mapping to Statements
-
-# Outside of R, in Excel:
-  # Go to GL Codes 2 sheet
-  # Unhide all columns in GL Codes 2 sheet
-  # Save GL Codes 2 sheet as CSV, gl_code
-
-# Install packages
-library(dplyr)
-
-# Set working directory where you save the CSVs
 
 # Read in gl_code.csv
 gl <- read.csv(file = "gl_code.csv", header = F)
@@ -124,3 +122,93 @@ dept_5 <- filter(dept_4,
 
 # Write Department CSV
 write.csv(dept_5, file = paste("fa_dept_upload_", format(Sys.Date(), "%Y-%m-%d"), ".csv"), row.names = F)
+
+#### Funding Sources 6 ####
+
+# Add an Active column
+
+# Column names, Excel
+  # Funding Source #
+  # Program #
+  # Primary Approver *
+  # Secondary Approver
+  # Funding Source
+  # start date
+  # end date
+  # Amount
+  # Cooper grant #
+  # EB rate
+  # IC rate
+  # CCHP
+  # ACO
+  # NC
+
+# Column Names For Upload
+  # CCHP_Funding_Source_Number
+  # Funding_Source
+  # Funding_Name
+  # Program_Number
+  # Primary_Approver
+  # Secondary_Approver
+  # Start_Date
+  # End_Date
+  # Amount
+  # Cooper_Grant_Number
+  # EB_rate
+  # IC_rate
+  # CCHP (Yes/No)
+  # ACO (Yes/No)
+  # NC (Yes/No)
+  # Active
+
+# Save Funding Sources 6 as CSV and read in sheet
+fund <- read.csv(file = "fund.csv", header = F)
+
+# Remove the nine rows before column headers row
+fund <- fund[-c(1:9),]
+
+# Split fund into Active and Inactive funding sources
+end_active <- grep("Inactive Grants", fund$V1) - 1
+fund_active <- fund[c(1:end_active),]
+fund_inactive <- fund[c(end_active:nrow(fund)),]
+
+# Remove columns V3, V4 (Funding Approvers), V15 fund_active
+fund_active$V3 <- NULL
+fund_active$V4 <- NULL
+fund_active$V15 <- NULL
+
+# Rename fund_active columns
+fund_active_2 <- rename(fund_active, 
+                        "CCHP_Funding_Source_Number" = V1,
+                        "Program_Number" = V2,
+                        "Funding_Name" = V5,
+                        "Start_Date" = V6,
+                        "End_Date" = V7,
+                        "Amount" = V8,
+                        "Cooper_Grant_Number" = V9,
+                        "EB_rate" = V10,
+                        "IC_rate" = V11,
+                        "CCHP" = V12,
+                        "ACO" = V13,
+                        "NC" = V14)
+
+# Replace X in CCHP, ACO, NC columns with "Yes"
+fund_active_2$CCHP <- as.character(fund_active_2$CCHP) 
+fund_active_2$ACO <- as.character(fund_active_2$ACO)
+fund_active_2$NC <- as.character(fund_active_2$NC)
+
+fund_active_2$CCHP[fund_active_2$CCHP == "X"] <- "Yes"
+fund_active_2$ACO <- ifelse(is.na(fund_active_2$ACO), "Yes", "")
+fund_active_2$NC[fund_active_2$NC == "X"] <- "Yes"
+
+# Add Funding_Source column
+fund_active_2$Funding_Source <- NA
+
+# Remove column name row and blank tail rows
+fund_active_3 <- filter(fund_active_2,
+                        CCHP_Funding_Source_Number != "Funding Source #",
+                        CCHP_Funding_Source_Number != "")
+
+# Fill Funding_Source column
+fund_active_3$CCHP_Funding_Source_Number <- as.numeric(as.character(fund_active_2$CCHP_Funding_Source_Number))
+
