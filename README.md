@@ -10,3 +10,5 @@ Append.R: R script that appends two csv files through the gtools package's smart
 Reporting.R: R script that cleans and merges data from many files for grant reporting
 
 excelDatesFunction.R: If the variable is a factor, converts excel dates in the format Jan 01, 1990 to 1990-01-01
+
+chart_of_accounts.R: Script that cleans the Chart of Accounts document to 

@@ -113,4 +113,14 @@ dept_3$`Account Title` <- as.character(dept_3$`Account Title`)
 dept_3$`Account Short Title` <- as.character(dept_3$`Account Short Title`)
 
 # Remove Account Title with "- Admin", "INACTIVE", or blank
+dept_4 <- filter(dept_3, 
+                 `Account Title` != "", 
+                 !grepl("- Admin", `Account Title`), 
+                 !grepl("INACTIVE", `Account Title`))
 
+# Remove Account Codes 45, 49, 800, 830, 900
+dept_5 <- filter(dept_4,
+                 !(`Account Code` %in% c(45,49, 800, 830, 900)))
+
+# Write Department CSV
+write.csv(dept_5, file = paste("fa_dept_upload_", format(Sys.Date(), "%Y-%m-%d"), ".csv"), row.names = F)
